@@ -54,8 +54,6 @@ class SerialData(object):
             return (-1, -1)
         if sensor.__len__() > 0:
             return (sensor.pop(0), pitch.pop(0))
-        #if pitch.__len__() > 0:
-        #    sValue = sensor.pop(0)
         return None
 
     def __del__(self):
