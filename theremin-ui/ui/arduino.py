@@ -51,7 +51,7 @@ class SerialData(object):
 
     def next(self):
         if not self.ser:
-            return -1
+            return (-1, -1)
         if sensor.__len__() > 0:
             return (sensor.pop(0), pitch.pop(0))
         #if pitch.__len__() > 0:
@@ -66,7 +66,7 @@ if __name__=='__main__':
     running = True
     s = SerialData()
     for i in range(500):
-        time.sleep(.010)
+        time.sleep(.005)
         value = s.next()
         if(value):
             print('Buffer size: ' + str(sensor.__len__()) + ' sensor: ' + str(float(value[0])) + " pitch: " + str(float(value[1])))
