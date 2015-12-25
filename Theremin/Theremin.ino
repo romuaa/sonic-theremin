@@ -42,9 +42,8 @@ void loop() {
 
   // play the pitch:
   if(pitch > 40 && pitch < 3000) {
-    Serial.print("S:");
-    Serial.println(sensorValue, DEC);
-    Serial.print("P:");
+    Serial.print(sensorValue, DEC);
+    Serial.print(",");
     Serial.println(pitch, DEC);
 
     noTone(9);

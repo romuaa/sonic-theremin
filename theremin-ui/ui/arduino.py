@@ -6,28 +6,17 @@ from threading import Thread
 import time
 import serial
 
-sensor = []
-pitch = []
+data = []
 running = False
 def receiving(ser):
-    global sensor
-    global pitch
+    global data
     global running
-    previousSensor = -1
-    previousPitch = -1
     while running:
         raw = ser.readline()
         if raw:
-            data = raw.decode().strip()
-            value = data.split(":")
-            if value[0] == "S":
-                previousSensor = value[1]
-                sensor.append(previousSensor)
-                pitch.append(previousPitch)
-            else:
-                previousPitch = value[1]
-                sensor.append(previousSensor)
-                pitch.append(previousPitch)
+            line = raw.decode().strip()
+            values = line.split(",")
+            data.append((values[0], values[1]))
 
 class SerialData(object):
     def __init__(self, init=50):
@@ -52,8 +41,8 @@ class SerialData(object):
     def next(self):
         if not self.ser:
             return (-1, -1)
-        if sensor.__len__() > 0:
-            return (sensor.pop(0), pitch.pop(0))
+        if data.__len__() > 0:
+            return data.pop(0)
         return None
 
     def __del__(self):
@@ -67,6 +56,6 @@ if __name__=='__main__':
         time.sleep(.005)
         value = s.next()
         if(value):
-            print('Buffer size: ' + str(sensor.__len__()) + ' sensor: ' + str(float(value[0])) + " pitch: " + str(float(value[1])))
+            print('Buffer size: ' + str(data.__len__()) + ' sensor: ' + str(float(value[0])) + " pitch: " + str(float(value[1])))
 
     running = False
