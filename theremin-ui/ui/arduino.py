@@ -8,6 +8,7 @@ import serial
 
 data = []
 running = False
+
 def receiving(ser):
     global data
     global running
@@ -17,8 +18,11 @@ def receiving(ser):
             line = raw.decode().strip()
             values = line.split(",")
             data.append((values[0], values[1]))
+            if data.__len__() > 10:
+                data.pop(0)
 
 class SerialData(object):
+
     def __init__(self, init=50):
         try:
             self.ser = ser = serial.Serial(
@@ -35,8 +39,22 @@ class SerialData(object):
         except serial.serialutil.SerialException:
             #no serial connection
             self.ser = None
-        else:
-            Thread(target=receiving, args=(self.ser,)).start()
+
+    def start(self):
+        global running
+        for i in range(5):
+            if self.ser:
+                print("Starting data receive thread")
+                running = True
+                Thread(target=receiving, args=(self.ser,)).start()
+                break
+            else:
+                print("No serial connection")
+        time.sleep(0.1)
+
+    def stop(self):
+        global running
+        running = False
 
     def next(self):
         if not self.ser:
@@ -50,12 +68,11 @@ class SerialData(object):
             self.ser.close()
 
 if __name__=='__main__':
-    running = True
     s = SerialData()
+    s.start()
     for i in range(500):
         time.sleep(.005)
         value = s.next()
         if(value):
             print('Buffer size: ' + str(data.__len__()) + ' sensor: ' + str(float(value[0])) + " pitch: " + str(float(value[1])))
-
-    running = False
+    s.stop()
