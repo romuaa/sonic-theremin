@@ -26,7 +26,7 @@ class SerialData(object):
     def __init__(self, init=50):
         try:
             self.ser = ser = serial.Serial(
-                port='/dev/tty.usbmodem1421',
+                port='/dev/ttyACM0',
                 baudrate=19200,
                 bytesize=serial.EIGHTBITS,
                 parity=serial.PARITY_NONE,
